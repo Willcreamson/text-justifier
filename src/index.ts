@@ -2,6 +2,11 @@ import express , {type Request, type Response, type NextFunction} from 'express'
 import { addToken, incrementTokenUsage, tokenManager } from './tokenManagement.js';
 import type TokenData from './tokenManagement.js';
 
+// Avant (Jest)
+// import { describe, test, expect } from '@jest/globals';
+
+// Après (Vitest)
+import { describe, test, expect } from 'vitest';
 
 const app = express();
 
