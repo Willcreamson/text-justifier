@@ -3,10 +3,19 @@ This project is an API written in Node and Typescript that returns a justify tex
 
 ## Settings and environment 
 - For this project we choose to use Docker, because we want to have an environment easy to configure that will run our api
-- Node.js
+- Node.js (node v20.19.2)
 - Typescript
 - Jest (tests)
 - Docker (déploiement)
+
+
+## script installation des dépendences 
+nvm use node 20.19.2
+npm install express
+npm install --save-dev typescript ts-node-dev @types/express jest ts-jest @types/jest
+npx tsc --init
+
+
 
 ## API development
 Endpoint unique token api/token
