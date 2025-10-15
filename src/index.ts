@@ -102,9 +102,24 @@ app.use(express.text({ type: 'text/plain' }));
 
 app.use(express.urlencoded({ extended: true })); // Formulaire urlencoded parser
 
-app.get("/api/", (req, res) =>{
-    res.send("✨Justify API is running Prepare your text !✨");
+app.get("/api/", (req, res) => {
+    res.setHeader("Content-Type", "text/html");
+    res.send(`
+    <h2>✨ Justify API Documentation ✨</h2>
+    <pre>
+        Generate a token:
+        POST /api/generatetoken
+        Body: { "email": "your_email@gmail.com" }
+
+        Justify text:
+        POST /api/justify
+        Headers: Authorization: Bearer &lt;your_token&gt;
+        Body: Your text (plain text)
+        ⚠️ Limit: 80,000 characters per token/day
+    </pre>
+    `);
 });
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Server listening on port ${PORT}`));
