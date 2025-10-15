@@ -1,5 +1,4 @@
 import crypto from "crypto";
-import {  type Response } from "express";
 
 export default interface TokenData {
     email: string;
