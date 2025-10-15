@@ -19,19 +19,24 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.19.2]
+        node-version: [20.x] # Utilise la dernière version 20.x automatiquement
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Version plus récente
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4 # Version plus récente
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'npm' # Cache npm pour accélérer les builds
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Lint (optionnel)
+        run: npm run lint
+        continue-on-error: true # Continue même si le lint échoue
 
       - name: Build TypeScript
         run: npx tsc --noEmit
@@ -40,3 +45,11 @@ jobs:
         run: npm test
         env:
           NODE_ENV: test
+
+      - name: Upload coverage (optionnel)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
