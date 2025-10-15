@@ -111,16 +111,14 @@ app.listen(PORT, () => console.log(`✅ Server listening on port ${PORT}`));
 
 
 // Génération d'un token unique pour une adresse email
-app.post("/api/generatetoken", (req, res) => { 
+app.post("/api/generatetoken", (req, res) => {
     const email = req.body.email;
-    console.log("email", email);
     if (!email) {
-        return res.status(400).send("Email is required");
+        return res.status(400).json({ msg: "Email is required", token: null });
     }
 
-    // Associe un nouveau token avec un email si l'email n'a pas déjà un token actif
-    addToken(email, res);
-    res.end();
+    const result = addToken(email);
+    res.json(result); // renvoie { msg: "...", token: "..." }
 });
 
 app.post("/api/justify", authenticate, (req, res) => {

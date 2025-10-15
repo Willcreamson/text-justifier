@@ -12,31 +12,32 @@ export default interface TokenData {
 // La map qui stocke les tokens en mémoire
 export const tokenManager = new Map<string, TokenData>();
 
-export function addToken(email: string, res : Response) {
+export function addToken(email: string): { msg: string; token: string | null } {
     const existing = tokenManager.get(email);
+    const now = new Date();
 
-    if (existing) {
-        const now = new Date();
-        if (now < existing.end_at) {
-            console.log(`Un token est déjà actif pour ${email} jusqu'à ${existing.end_at}`);
-            return; // On ne remplace pas le token
-        }
+    if (existing && now < existing.end_at) {
+        return {
+            msg: `Un token est déjà actif pour ${email} jusqu'à ${existing.end_at.toISOString()}`,
+            token: existing.token
+        };
+    } else {
+        const token = crypto.randomBytes(16).toString("hex");
+
+        tokenManager.set(email, {
+            email,
+            token,
+            word_usage: 0,
+            created_at: now,
+            end_at: new Date(now.getTime() + 86400 * 1000)
+        });
+
+        return {
+            msg: `Token generated for ${email}`,
+            token
+        };
     }
-    const token = crypto.randomBytes(16).toString("hex");
-
-    // Sinon on crée un nouveau token
-    tokenManager.set(email, {
-        email,
-        token,
-        word_usage: 0, // 80k caractères
-        created_at: new Date(),
-        end_at: new Date(Date.now() + 86400 * 1000) // 1 jour
-    });
-
-    console.log(`Nouveau token créé pour ${email} : ${token}`);
-    res.send(`Token generated: ${token} from email: ${email}`);
 }
-
 function incrementTokenUsage(email: string) {
     const tokenData = tokenManager.get(email);
     if (tokenData) {
