@@ -33,23 +33,16 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Lint (optionnel)
-        run: npm run lint
-        continue-on-error: true # Continue même si le lint échoue
-
       - name: Build TypeScript
         run: npx tsc --noEmit
 
       - name: Run tests
-        run: npm test
+        run: npx vitest run --coverage
         env:
           NODE_ENV: test
 
-      - name: Upload coverage (optionnel)
-        if: always()
+      - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: coverage/
-          retention-days: 30
+          path: coverage/   # ou ./reports/coverage si tu as changé le dossier
